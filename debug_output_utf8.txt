@@ -1,0 +1,51 @@
+﻿
+Running 1 test using 1 worker
+
+[1A[2K[1/1] [chrome] ΓÇ║ src\tests\ai-discovery\quick-assessment.spec.ts:33:7 ΓÇ║ Quick Business Assessment Flow ΓÇ║ Complete Quick Business Assessment
+[1A[2K[chrome] ΓÇ║ src\tests\ai-discovery\quick-assessment.spec.ts:33:7 ΓÇ║ Quick Business Assessment Flow ΓÇ║ Complete Quick Business Assessment
+DEBUG: All h2 texts: [
+  [32m'AI Discovery Assistant'[39m,
+  [32m'Quick Business Assessment'[39m,
+  [32m'Which part of your business do you want to improve first?'[39m
+]
+
+[1A[2KDEBUG: Question Title locator count: [33m3[39m
+
+[1A[2K  1) [chrome] ΓÇ║ src\tests\ai-discovery\quick-assessment.spec.ts:33:7 ΓÇ║ Quick Business Assessment Flow ΓÇ║ Complete Quick Business Assessment 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('h2')
+    Expected substring: [32m"What is your main business area?"[39m
+    Error: strict mode violation: locator('h2') resolved to 3 elements:
+        1) <h2 id="radix-_r_7_">AI Discovery Assistant</h2> aka getByRole('heading', { name: 'AI Discovery Assistant' })
+        2) <h2 class="text-[16px] font-medium leading-[24px] text-[#181b25] tracking-[-0.176px]">Quick Business Assessment</h2> aka getByRole('heading', { name: 'Quick Business Assessment', exact: true })
+        3) <h2 class="text-[18px] font-medium text-[#2e3033] tracking-[-0.18px]">Which part of your business do you want to improvΓÇª</h2> aka getByRole('heading', { name: 'Which part of your business' })
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 10000ms[22m
+    [2m  - waiting for locator('h2')[22m
+
+
+      53 |       await qaPage.questionTitle.count(),
+      54 |     );
+    > 55 |     await expect(qaPage.questionTitle).toContainText(
+         |                                        ^
+      56 |       "What is your main business area?",
+      57 |     );
+      58 |     await expect(qaPage.options).toHaveCount(6);
+        at C:\Vishrant\attri-ai-automation\src\tests\ai-discovery\quick-assessment.spec.ts:55:40
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ai-discovery-quick-assessm-619e9-e-Quick-Business-Assessment-chrome\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    attachment #2: video (video/webm) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ai-discovery-quick-assessm-619e9-e-Quick-Business-Assessment-chrome\video.webm
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\ai-discovery-quick-assessm-619e9-e-Quick-Business-Assessment-chrome\error-context.md
+
+
+[1A[2K  1 failed
+    [chrome] ΓÇ║ src\tests\ai-discovery\quick-assessment.spec.ts:33:7 ΓÇ║ Quick Business Assessment Flow ΓÇ║ Complete Quick Business Assessment 

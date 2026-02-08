@@ -1,4 +1,3 @@
-import { Locator } from "@playwright/test";
 import { test, expect } from "../fixtures/baseTest";
 import { AgentsGalleryPage } from "../pages/AgentsGalleryPage";
 
@@ -102,8 +101,6 @@ test.describe("Agents Gallery — Listing Page", () => {
     await gallery.previousButton.scrollIntoViewIfNeeded();
     await gallery.goToPreviousPage();
     await page.waitForLoadState("networkidle");
-
-    const page1Button = gallery.getNumberedPageButton("1");
     // Expect: Should return to page 1
     await expect(gallery.agentCards.first()).toBeVisible({ timeout: 15000 });
 

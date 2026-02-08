@@ -69,11 +69,6 @@ export class AgentsGalleryPage {
     await this.searchInput.press("Enter");
   }
 
-  async clearSearch() {
-    await this.searchInput.fill("");
-    await this.searchInput.press("Enter");
-  }
-
   // Category filter functionality
   async filterByCategory(category: string) {
     await this.page.getByRole("button", { name: category }).click();
@@ -92,8 +87,11 @@ export class AgentsGalleryPage {
     await this.page.getByLabel(`Go to page ${pageNumber}`).click();
   }
 
-  getPageButton(pageNumber: number): Locator {
-    return this.page.getByLabel(`Go to page ${pageNumber}`);
+  getPageButton(pageNumber: number) {
+    return this.page.getByRole("button", {
+      name: `Go to page ${pageNumber}`,
+      exact: true,
+    });
   }
 
   getNumberedPageButton(pageNumber: string): Locator {
@@ -133,18 +131,5 @@ export class AgentsGalleryPage {
       .nth(cardIndex)
       .getByRole("button", { name: /details/i })
       .click();
-  }
-
-  // Legacy methods for backward compatibility
-  async openFirstAgentDetails() {
-    await this.clickDetails(0);
-  }
-
-  async buildFirstAgent() {
-    await this.clickBuildThisAgent(0);
-  }
-
-  async validateCardsLoaded() {
-    await this.agentCards.first().waitFor({ state: "visible" });
   }
 }

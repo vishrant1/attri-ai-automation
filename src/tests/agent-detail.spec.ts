@@ -6,7 +6,6 @@ test.describe("Agents Gallery — Listing Page", () => {
   test("Verify all gallery page elements and functionality", async ({
     page,
   }) => {
-    test.setTimeout(60000); // Increase timeout to 60s
     const gallery: AgentsGalleryPage = new AgentsGalleryPage(page);
 
     // Step 1: Navigate to Agents Gallery page

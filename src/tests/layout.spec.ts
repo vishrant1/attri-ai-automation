@@ -8,7 +8,7 @@ test.describe("Navigation & Global Layout", () => {
     layout = new LayoutPage(page);
   });
 
-  test("Verify header navigation links are visible", async ({ page }) => {
+  test("Verify header navigation links are visible", async () => {
     //Step 1: Verify header navigation links are visible
     // Expect: All header links are visible
     await expect(layout.agentsGalleryLink).toBeVisible();
@@ -19,7 +19,7 @@ test.describe("Navigation & Global Layout", () => {
     await expect(layout.startForFreeButton).toBeVisible();
   });
 
-  test("Verify footer sections are visible", async ({ page }) => {
+  test("Verify footer sections are visible", async () => {
     // Step 1: Verify footer sections
     await layout.footer.scrollIntoViewIfNeeded();
     // Expect: Footer sections are visible

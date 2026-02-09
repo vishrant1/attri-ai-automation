@@ -33,7 +33,7 @@ test.describe("Agent Detail Page", () => {
 
   test("Verify default expanded and collapsed states of collapsible sections", async () => {
     // Step 2: Verify About section default state
-    await // Expect: About this agent is expanded by default
+    // Expect: About this agent is expanded by default
     await expect(detail.aboutSection).toBeVisible();
     await expect(detail.aboutToggle).toBeVisible();
 

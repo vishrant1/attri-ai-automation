@@ -30,7 +30,6 @@ jobs:
       # 4. Run tests (headless)
       - name: Run Playwright tests
         run: npx playwright test
-        continue-on-error: true
 
       # 5. Generate Allure report
       - name: Generate Allure report

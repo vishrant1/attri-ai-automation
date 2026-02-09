@@ -2,7 +2,7 @@ import { Page, Locator } from "@playwright/test";
 
 export class AIDiscoveryModal {
   readonly page: Page;
-  //   readonly modal: Locator;
+  readonly dialog: Locator;
   readonly recommendationCards: Locator;
 
   // Sidebar buttons
@@ -12,7 +12,7 @@ export class AIDiscoveryModal {
 
   constructor(page: Page) {
     this.page = page;
-    // this.modal = page.locator('[role="dialog"]');
+    this.dialog = page.locator('[role="dialog"]');
     this.recommendationCards = page.locator('[class*="h-[212px]"]');
 
     // Sidebar buttons
@@ -25,11 +25,11 @@ export class AIDiscoveryModal {
     this.quickAssessment = page.locator('button:has-text("Quick Assessment")');
   }
 
-  async openFromHero() {
+  async openDiscoveryModalFromHero() {
     await this.page
       .getByRole("button", { name: "Explore templates with AI" })
       .click();
-    await this.page.locator('[role="dialog"]').waitFor();
+    await this.dialog.waitFor();
   }
 
   async switchToQuickAssessment() {
@@ -42,20 +42,20 @@ export class AIDiscoveryModal {
       .click();
   }
 
-  async openFromBottomConversational() {
+  async openDiscoveryModalFromBottomConversational() {
     await this.page
       .getByRole("button", { name: "Conversational Discovery" })
       .last()
       .click();
-    await this.page.locator('[role="dialog"]').waitFor();
+    await this.dialog.waitFor();
   }
 
-  async openFromBottomQuickAssessment() {
+  async openDiscoveryModalFromBottomQuickAssessment() {
     await this.page
       .getByRole("button", { name: "Quick Assessment" })
       .last()
       .click();
-    await this.page.locator('[role="dialog"]').waitFor();
+    await this.dialog.waitFor();
   }
 
   async close() {

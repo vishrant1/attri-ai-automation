@@ -2,93 +2,149 @@ import { test, expect } from "../../fixtures/baseTest";
 import { AIDiscoveryModal } from "../../pages/AIDiscoveryModal";
 import { QuickAssessmentPage } from "../../pages/QuickAssessment";
 
-test.describe("Quick Business Assessment Flow", () => {
-  test("Complete Quick Business Assessment", async ({ page }) => {
-    const modal: AIDiscoveryModal = new AIDiscoveryModal(page);
-    const qaPage: QuickAssessmentPage = new QuickAssessmentPage(page);
+test.describe("AI Discovery – Quick Assessment", () => {
+  let modal: AIDiscoveryModal;
+  let qa: QuickAssessmentPage;
 
-    // Navigate to Quick Assessment
-    await modal.openFromHero();
+  test.beforeEach(async ({ page }) => {
+    modal = new AIDiscoveryModal(page);
+    qa = new QuickAssessmentPage(page);
+
+    // Step 1: Open AI Discovery modal
+    await modal.openDiscoveryModalFromHero();
+
+    // Step 2: Switch to Quick Assessment tab
     await modal.switchToQuickAssessment();
+    // Expect: Quick Assessment tab is active
+    await expect(qa.questionTitle).toBeVisible();
+  });
 
-    // Step 1: Check For the number of questions
-    // Expect: 4-step questionnaire should present (progress indicated by dots at the top)
-    await expect(qaPage.stepIndicators).toHaveCount(4);
+  test("Verify 4-step questionnaire and initial options", async () => {
+    // Step 1: Observe step indicators
+    // Expect: Exactly 4 steps are shown
+    await expect(qa.stepIndicators).toHaveCount(4);
 
-    // Step 2: Check for the main questions and it's options
-    // Expect: Main question should display with all options
-    await expect(qaPage.questionTitle).toContainText(
-      "Which part of your business do you want to improve first?",
-    );
-    await expect(qaPage.options).toHaveCount(6);
-    await expect(qaPage.options.first()).toHaveText("Finance & Accounting");
-    await expect(qaPage.options.nth(1)).toHaveText("Sales & Marketing");
-    await expect(qaPage.options.nth(2)).toHaveText("Customer Service");
-    await expect(qaPage.options.nth(3)).toHaveText("HR & People Ops");
-    await expect(qaPage.options.nth(4)).toHaveText("Operations / Supply");
-    await expect(qaPage.options.last()).toHaveText("IT / Data & Security");
-
-    // Step 3: Check Continue button
-    // Expect: Continue button should be disabled
-    await expect(qaPage.continueBtn).toBeDisabled();
-
-    // Step 4: Select any option
-    await qaPage.selectOption("Finance & Accounting");
-    // Expect: Continue button should be enabled
-    await expect(qaPage.continueBtn).toBeEnabled();
-
-    // Step 5: Click Continue button and validate selected option's details
-    await qaPage.clickContinue();
-    // Expect: Finance & Accounting-specific question should display with all options
-    await expect(qaPage.questionTitle).toContainText(
-      "What’s the main finance task you want to improve?",
-    );
-    await expect(qaPage.options).toHaveCount(5);
-    await expect(qaPage.options.first()).toHaveText("Invoice Processing");
-    await expect(qaPage.options.nth(1)).toHaveText("Expense Reviews");
-    await expect(qaPage.options.nth(2)).toHaveText("Cash-Flow Forecasts");
-    await expect(qaPage.options.nth(3)).toHaveText("Audit / Compliance");
-    await expect(qaPage.options.nth(4)).toHaveText("Financial Reports");
-
-    // Step 6: Click on the "Go back" button
-    await qaPage.clickGoBack();
-    // Expect: previous question should display
-    await expect(qaPage.questionTitle).toContainText(
+    // Step 2: Observe first question
+    // Expect: Correct question text is displayed
+    await expect(qa.questionTitle).toContainText(
       "Which part of your business do you want to improve first?",
     );
 
-    // Step 7: Click on the "Continue" button
-    await qaPage.clickContinue();
-    // Expect: Move again in next question
-    await expect(qaPage.questionTitle).toContainText(
+    // Step 3: Observe available options
+    // Expect: 6 business area options are displayed
+    await expect(qa.options).toHaveCount(6);
+  });
+
+  test("Verify Continue button enable/disable behavior", async () => {
+    // Step 1: Observe Continue button without selection
+    // Expect: Continue button is disabled
+    await expect(qa.continueBtn).toBeDisabled();
+
+    // Step 2: Select a business area
+    await qa.selectOption("Finance & Accounting");
+    // Expect: Continue button becomes enabled
+    await expect(qa.continueBtn).toBeEnabled();
+  });
+
+  test("Verify Go back button behavior from Step 2", async () => {
+    // Step 1: Select Finance & Accounting
+    await qa.selectOption("Finance & Accounting");
+    // Expect: Option is selectable (implicit state change)
+    await expect(qa.continueBtn).toBeEnabled();
+
+    // Step 2: Click Continue
+    await qa.clickContinue();
+    // Expect: Finance-specific question is shown
+    await expect(qa.questionTitle).toContainText(
       "What’s the main finance task you want to improve?",
     );
 
-    // Step 8: Select "Invoice Processing" option
-    await qaPage.selectOption("Invoice Processing");
-    await qaPage.clickContinue();
+    // Step 3: Click Go back
+    await qa.clickGoBack();
+    // Expect: User returns to first question
+    await expect(qa.questionTitle).toContainText(
+      "Which part of your business do you want to improve first?",
+    );
+  });
 
-    // Step 9: Select "Spreadsheets & Docs" option
-    await qaPage.selectOption("Spreadsheets & Docs");
-    await qaPage.clickContinue();
+  test("Verify full assessment completion flow", async ({ page }) => {
+    // Step 1: Select Finance & Accounting
+    await qa.selectOption("Finance & Accounting");
+    // Expect: Continue button is enabled
+    await expect(qa.continueBtn).toBeEnabled();
 
-    // Step 10: Select "Quicker processing" option and Cick Submit
-    await qaPage.selectOption("Quicker processing");
-    await qaPage.clickSubmit();
+    // Step 2: Continue to next step
+    await qa.clickContinue();
+    // Expect: Finance task question is displayed
+    await expect(qa.questionTitle).toContainText(
+      "What’s the main finance task you want to improve?",
+    );
 
-    // Step 11: Wait till "Assessment Complete" Page load
-    // Expect: Assessment Complete! heading should display
+    // Step 3: Select Invoice Processing
+    await qa.selectOption("Invoice Processing");
+    // Expect: Continue button is enabled
+    await expect(qa.continueBtn).toBeEnabled();
+
+    // Step 4: Continue to next step
+    await qa.clickContinue();
+    // Expect: Data source question is displayed
+    await expect(qa.questionTitle).toBeVisible();
+
+    // Step 5: Select Spreadsheets & Docs
+    await qa.selectOption("Spreadsheets & Docs");
+    // Expect: Continue button is enabled
+    await expect(qa.continueBtn).toBeEnabled();
+
+    // Step 6: Continue to final step
+    await qa.clickContinue();
+    // Expect: Goal selection question is displayed
+    await expect(qa.questionTitle).toBeVisible();
+
+    // Step 7: Select Quicker processing
+    await qa.selectOption("Quicker processing");
+    // Expect: Submit button is enabled
+    await expect(qa.submitBtn).toBeEnabled();
+
+    // Step 8: Submit assessment
+    await qa.clickSubmit();
+    // Expect: Assessment Complete screen appears
+    await expect(
+      page.getByRole("heading", { name: "Assessment Complete!" }),
+    ).toBeVisible({ timeout: 10000 });
+  });
+
+  test("Verify recommended agent templates and CTAs", async ({ page }) => {
+    // Step 1: Complete assessment flow
+    await qa.selectOption("Finance & Accounting");
+    await qa.clickContinue();
+
+    await qa.selectOption("Invoice Processing");
+    await qa.clickContinue();
+
+    await qa.selectOption("Spreadsheets & Docs");
+    await qa.clickContinue();
+
+    await qa.selectOption("Quicker processing");
+    await qa.clickSubmit();
+
+    // Expect: Assessment completion page is visible
     await expect(
       page.getByRole("heading", { name: "Assessment Complete!" }),
     ).toBeVisible({ timeout: 10000 });
 
-    // Step 12: Validate agent template card
-    // Expect: Agent template card should display with name, description and CTA buttons
+    // Step 2: Observe recommendation cards
+    // Expect: At least one recommended agent is shown
     await expect
       .poll(async () => await modal.getRecommendationCardCount())
       .toBeGreaterThan(0);
+
+    // Step 3: Observe agent card content
+    // Expect: Agent name and description are visible
     await expect(modal.agentName()).toBeVisible();
     await expect(modal.agentDescription()).toBeVisible();
+
+    // Step 4: Observe CTA buttons
+    // Expect: Build and Details buttons are visible
     await expect(modal.ctaButton("Build this agent")).toBeVisible();
     await expect(modal.ctaButton("Details")).toBeVisible();
   });

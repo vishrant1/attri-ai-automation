@@ -2,96 +2,122 @@ import { test, expect } from "../../fixtures/baseTest";
 import { AIDiscoveryModal } from "../../pages/AIDiscoveryModal";
 
 test.describe("Tab Switching & Modal Behavior", () => {
-  test("Users can switch between tabs and close modal from different entry points", async ({
+  let modal: AIDiscoveryModal;
+
+  test.beforeEach(async ({ page }) => {
+    modal = new AIDiscoveryModal(page);
+  });
+
+  test("Open modal from hero and verify default tab", async ({ page }) => {
+    // Step 1: Open modal from hero section
+    await modal.openDiscoveryModalFromHero();
+    // Expect: Modal should be visible
+    await expect(modal.dialog).toBeVisible();
+
+    // Step 2: Verify Conversational Discovery tab is default
+    // Expect: Conversational Discovery tab should be selected
+    await expect(
+      modal.dialog.locator(modal.conversationalDiscovery.first()),
+    ).toHaveClass(/bg-/);
+  });
+
+  test("Switch between Conversational Discovery and Quick Assessment tabs", async ({
     page,
   }) => {
-    const modal: AIDiscoveryModal = new AIDiscoveryModal(page);
+    // Step 1: Open modal from hero
+    await modal.openDiscoveryModalFromHero();
+    // Expect: Modal should be visible
+    await expect(modal.dialog).toBeVisible();
 
-    // Step 1: Open modal from Hero section
-    await modal.openFromHero();
-    // Expect: Modal is visible
-    await expect(page.locator('[role="dialog"]')).toBeVisible();
-
-    // Step 2: Verify Conversational Discovery tab is default selected
-    // Expect: Conversational Discovery tab should be default selected
-    await expect(
-      page.getByRole("button", { name: "Conversational Discovery" }).first(),
-    ).toHaveClass(/bg-/);
-
-    // Step 3: Switch to Quick Assessment tab
+    // Step 2: Switch to Quick Assessment
     await modal.switchToQuickAssessment();
-    // Expect: Quick Assessment interface should selected
+    // Expect: Quick Assessment tab should be selected
     await expect(
-      page.getByRole("button", { name: "Quick Assessment" }),
+      modal.dialog.locator(modal.quickAssessment.first()),
     ).toHaveClass(/bg-/);
 
-    // Step 4: Move to "All templates" page
+    // Step 3: Switch back to Conversational Discovery
+    await modal.switchToConversationalDiscovery();
+    // Expect: Conversational Discovery tab should be selected
+    await expect(
+      modal.dialog.locator(modal.conversationalDiscovery.first()),
+    ).toHaveClass(/bg-/);
+  });
+
+  test("Back to all templates closes modal and returns to gallery", async ({
+    page,
+  }) => {
+    // Step 1: Open modal
+    await modal.openDiscoveryModalFromHero();
+    // Expect: Modal should be visible
+    await expect(modal.dialog).toBeVisible();
+
+    // Step 2: Click Back to all templates
     await modal.backToTemplates.click();
-    // Expect: Main page should display
+    // Expect: Hero CTA should be visible on gallery page
+    await expect(
+      page.getByRole("button", { name: "Explore templates with AI" }),
+    ).toBeVisible();
+  });
+
+  test("Open modal from gallery buttons under hero section", async ({
+    page,
+  }) => {
+    // Step 1: Click Conversational Discovery button under hero
+    await modal.conversationalDiscovery.first().click();
+    // Expect: Conversational Discovery modal should open
+    await expect(
+      modal.dialog.locator(modal.conversationalDiscovery.first()),
+    ).toHaveClass(/bg-/);
+
+    // Step 2: Close modal
+    await modal.backToTemplates.click();
+    // Expect: Gallery hero CTA visible
     await expect(
       page.getByRole("button", { name: "Explore templates with AI" }),
     ).toBeVisible();
 
-    // Step 5: "Conversational discovery" and "Quick assessment" buttons should be visible
-    // Expect: "Conversational discovery" and "Quick assessment" buttons should be visible below "Explore templates with AI"
+    // Step 3: Click Quick Assessment button under hero
+    await modal.quickAssessment.first().click();
+    // Expect: Quick Assessment modal should open
     await expect(
-      page.getByRole("button", { name: "Conversational Discovery" }).first(),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Quick Assessment" }).first(),
-    ).toBeVisible();
-
-    // Step 6: Switch to Conversational Discovery tab from above location
-    await page
-      .getByRole("button", { name: "Conversational Discovery" })
-      .first()
-      .click();
-    // Expect: Conversational Discovery interface should display
-    await expect(
-      page.getByRole("button", { name: "Conversational Discovery" }).first(),
+      modal.dialog.locator(modal.quickAssessment.first()),
     ).toHaveClass(/bg-/);
+  });
 
-    // Step 7: Switch to Quick Assessment tab from above location
-    await modal.backToTemplates.click();
-    await page
-      .getByRole("button", { name: "Quick Assessment" })
-      .first()
-      .click();
-    // Expect: Quick Assessment interface should display
-    await expect(
-      page.getByRole("button", { name: "Quick Assessment" }),
-    ).toHaveClass(/bg-/);
-
-    // Step 8: Move to main page and scroll down till "Search templates with new way" tab.
-    await modal.backToTemplates.click();
-    await page
+  test("Open modal from bottom CTA section", async ({ page }) => {
+    const bottomCTAHeading = page
       .getByText("Search templates with new way")
-      .first()
-      .scrollIntoViewIfNeeded();
-    // Expect: "Conversational discovery" and "Quick assessment" buttons should display here.
-    await expect(
-      page.getByRole("button", { name: "Conversational Discovery" }).last(),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Quick Assessment" }).last(),
-    ).toBeVisible();
+      .first();
+    await bottomCTAHeading.scrollIntoViewIfNeeded();
 
-    // Step 9: Switch to Conversational Discovery tab from above location
-    await page
+    const bottomConversationalBtn = page
       .getByRole("button", { name: "Conversational Discovery" })
-      .last()
-      .click();
-    // Expect: Conversational Discovery interface should display
+      .last();
+    const bottomQuickBtn = page
+      .getByRole("button", { name: "Quick Assessment" })
+      .last();
+    // Expect: Bottom CTA buttons should be visible
+    await expect(bottomConversationalBtn).toBeVisible();
+    await expect(bottomQuickBtn).toBeVisible();
+
+    // Step 2: Open Conversational Discovery from bottom CTA
+    await modal.openDiscoveryModalFromBottomConversational();
+    // Expect: Conversational Discovery tab should be selected
     await expect(
-      page.getByRole("button", { name: "Conversational Discovery" }).first(),
+      modal.dialog.locator(modal.conversationalDiscovery.first()),
     ).toHaveClass(/bg-/);
 
-    // Step 10: Switch to Quick Assessment tab from above location
+    // Step 3: Close modal
     await modal.backToTemplates.click();
-    await page.getByRole("button", { name: "Quick Assessment" }).last().click();
-    // Expect: Quick Assessment interface should display
+    // Expect: Bottom CTA buttons should be visible again
+    await expect(modal.conversationalDiscovery.last()).toBeVisible();
+
+    // Step 4: Open Quick Assessment from bottom CTA
+    await modal.openDiscoveryModalFromBottomQuickAssessment();
+    // Expect: Quick Assessment tab should be selected
     await expect(
-      page.getByRole("button", { name: "Quick Assessment" }),
+      modal.dialog.locator(modal.quickAssessment.first()),
     ).toHaveClass(/bg-/);
   });
 });

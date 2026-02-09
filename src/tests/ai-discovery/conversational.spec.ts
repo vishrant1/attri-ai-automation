@@ -11,14 +11,14 @@ test.describe("AI Discovery – Conversational Discovery", () => {
     const chat: ConversationalDiscovery = new ConversationalDiscovery(page);
 
     // Step 1: Open AI Discovery modal
-    await modal.openFromHero();
+    await modal.openDiscoveryModalFromHero();
     // Expect: Modal is visible
-    await expect(page.locator('[role="dialog"]')).toBeVisible();
+    await expect(modal.dialog).toBeVisible();
 
     // Step 2: Verify Conversational Discovery tab selected
     // Expect: Tab has highlight (bg class)
     await expect(
-      page.getByRole("button", { name: /Conversational/i }),
+      modal.dialog.locator(modal.conversationalDiscovery.first()),
     ).toHaveClass(/bg-/);
 
     // Step 3: Send initial business problem

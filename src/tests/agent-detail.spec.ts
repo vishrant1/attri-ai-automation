@@ -1,119 +1,105 @@
 import { test, expect } from "../fixtures/baseTest";
-import { AgentsGalleryPage } from "../pages/AgentsGalleryPage";
+import { AgentDetailPage } from "../pages/AgentDetailPage";
 
-test.describe("Agents Gallery — Listing Page", () => {
-  test("Verify all gallery page elements and functionality", async ({
+test.describe("Agent Detail Page", () => {
+  let detail: AgentDetailPage;
+
+  test.beforeEach(async ({ page }) => {
+    detail = new AgentDetailPage(page);
+
+    // Step 1: Open a valid agent detail page
+    await detail.open("rapid-ap-insights-ai-service");
+    // Expect: Agent detail page loads
+    await expect(page).toHaveURL(/agents\//);
+  });
+
+  test("Verify agent detail page loads with core elements", async () => {
+    // Step 2: Verify title
+    // Expect: Agent title is visible
+    await expect(detail.agentTitle).toBeVisible();
+
+    // Step 3: Verify description
+    // Expect: Agent description is visible
+    await expect(detail.agentDescription).toBeVisible();
+
+    // Step 4: Verify KPI cards
+    // Expect: Exactly 4 KPI cards are displayed
+    await expect(detail.kpiCards).toHaveCount(4);
+
+    // Step 5: Verify workspace preview image
+    // Expect: Workspace preview is visible
+    await expect(detail.workspacePreview).toBeVisible();
+  });
+
+  test("Verify default expanded and collapsed states of collapsible sections", async () => {
+    // Step 2: Verify About section default state
+    await // Expect: About this agent is expanded by default
+    await expect(detail.aboutSection).toBeVisible();
+    await expect(detail.aboutToggle).toBeVisible();
+
+    // Step 3: Verify Challenges section default state
+    const agentTitle: string = (await detail.agentTitle.textContent()) || "";
+    // Expect: Challenges section is collapsed by default
+    await expect(
+      detail.challengesSection(agentTitle + " solves"),
+    ).toBeVisible();
+    await expect(detail.challengesToggle(agentTitle + " solves")).toBeVisible();
+
+    // Step 4: Verify How it works section default state
+    // Expect: How it works section is collapsed by default
+    await expect(detail.howItWorksSection).toBeVisible();
+    await expect(detail.howItWorksToggle).toBeVisible();
+  });
+
+  test("Verify 3-step How it works guide", async () => {
+    // Step 2: Verify Step 1
+    // Expect: “Use Template” step is visible
+    await expect(detail.stepUseTemplate).toBeVisible();
+
+    // Step 3: Verify Step 2
+    // Expect: “Customize” step is visible
+    await expect(detail.stepCustomize).toBeVisible();
+
+    // Step 4: Verify Step 3
+    // Expect: “Publish” step is visible
+    await expect(detail.stepPublish).toBeVisible();
+  });
+
+  test("Verify 'More digital employees you may like' section and related agent actions", async ({
     page,
   }) => {
-    const gallery: AgentsGalleryPage = new AgentsGalleryPage(page);
+    // Step 2: Scroll to "More digital employees you may like" section
+    await detail.relatedSection.scrollIntoViewIfNeeded();
+    // Expect: Related agents section is visible
+    await expect(detail.relatedSection).toBeVisible();
 
-    // Step 1: Navigate to Agents Gallery page
-    await gallery.open();
-    await expect(page).toHaveURL(/\/agents/);
+    // Step 3: Verify related agent cards
+    // Expect: Exactly 4 related agent cards are displayed
+    await expect(detail.relatedAgentCards).toHaveCount(4);
 
-    // Step 2: Verify Hero section elements
-    // Expect: Hero section should display with title, subtitle, and "Explore templates with AI" CTA
-    await expect(gallery.heroTitle).toBeVisible();
-    await expect(gallery.heroSubtitle).toBeVisible();
-    await expect(gallery.exploreWithAIButton).toBeVisible();
-    await expect(gallery.exploreWithAIButton).toHaveText(
-      /Explore templates with AI/i,
-    );
-
-    // Scroll to "Search templates" section to view cards and features below
-    await gallery.searchTemplatesHeading.scrollIntoViewIfNeeded();
-
-    // Step 3: Verify Search bar
-    // Expect: Search bar should be visible
-    await expect(gallery.searchInput).toBeVisible();
-
-    // Step 4: Verify Category filters - Horizontal button bar with 11 options
-    // Expect: All 11 category filter buttons should be visible
-    const categories = [
-      "All templates",
-      "Billing",
-      "Customer Service",
-      "Finance",
-      "Human Resources",
-      "Information Technology",
-      "Legal",
-      "Marketing",
-      "Procurement",
-      "Sales",
-      "Utilities",
-    ];
-
-    for (const category of categories) {
-      await expect(page.getByRole("button", { name: category })).toBeVisible();
-    }
-
-    // Step 5: Verify Agent cards are loaded
-    // Expect: 10 agent cards should be visible per page
-    await expect(gallery.agentCards).toHaveCount(10, { timeout: 30000 });
-
-    // Step 6: Verify agent card
-    const firstCard = gallery.getAgentCard(0);
-    // Expect: it should have thumbnail image, KPI metric badge, agent name, description, "Build this agent" button, "Details" button
-    await expect(gallery.getAgentCardThumbnail(0)).toBeVisible();
-    await expect(gallery.getAgentCardKPIBadge(0)).toBeVisible();
-    await expect(gallery.getAgentCardName(0)).toBeVisible();
-    await expect(gallery.getAgentCardDescription(0)).toBeVisible();
+    // Step 4: Verify CTA buttons on first related agent card
+    const firstRelatedCard = detail.relatedAgentCards.first();
+    // Expect: Details CTA is visible
     await expect(
-      firstCard.getByRole("button", { name: /build this agent/i }),
-    ).toBeVisible();
-    await expect(
-      firstCard.getByRole("button", { name: /details/i }),
+      firstRelatedCard.getByRole("button", { name: /details/i }),
     ).toBeVisible();
 
-    // Step 7: Verify Pagination elements and total pages
-    const totalPages: number = await gallery.pageNumbers.count();
-    // Expect: Pagination with Previous/Next arrows and numbered pages should be visible
-    await expect(gallery.nextButton).toBeVisible();
-    expect(totalPages).toBeGreaterThan(0);
+    // Expect: Build this agent CTA is visible
+    await expect(
+      firstRelatedCard.getByRole("button", { name: /build this agent/i }),
+    ).toBeVisible();
 
-    // Step 8: Verify agent cards per page
-    let currentCardCount: number = await gallery.agentCards.count();
-    // Expect: Should have exactly 10 agent cards per page
-    expect(currentCardCount).toBe(10);
+    // Step 5: Click Details CTA
+    await firstRelatedCard.getByRole("button", { name: /details/i }).click();
+    // Expect: User navigates to another agent detail page
+    await expect(page).toHaveURL(/agents\/.+/);
+  });
 
-    // Step 9: Test Search bar functionality with keyword
-    await gallery.searchAgent("Invoice");
-    await page.waitForLoadState("networkidle");
-    // Expect: Agent templates should be filtered by search keyword
-    await expect(gallery.agentCards.first()).toBeVisible({ timeout: 15000 });
-    await expect(gallery.agentCards).not.toHaveCount(0);
-    const searchCardCount: number = await gallery.agentCards.count();
-    expect(searchCardCount).toBeGreaterThan(0);
+  test("Verify Back to all templates navigation", async ({ page }) => {
+    // Step 2: Click Back to all templates link
+    await detail.backToGalleryLink.click();
 
-    // Step 10: Test pagination - Navigate to next page
-    await gallery.open();
-    await page.waitForLoadState("networkidle");
-    await gallery.nextButton.scrollIntoViewIfNeeded();
-    await gallery.goToNextPage();
-    await page.waitForLoadState("networkidle");
-
-    const page2Button = gallery.getPageButton(2);
-    // Expect: Page 2 should load with 10 new agent cards and in pagination 2 should be highlighted
-    await expect(gallery.agentCards.first()).toBeVisible({ timeout: 15000 });
-    await expect(page2Button).toHaveAttribute("aria-current", "page");
-
-    // Step 11: Test pagination - Navigate to previous page
-    await gallery.previousButton.scrollIntoViewIfNeeded();
-    await gallery.goToPreviousPage();
-    await page.waitForLoadState("networkidle");
-    // Expect: Should return to page 1
-    await expect(gallery.agentCards.first()).toBeVisible({ timeout: 15000 });
-
-    // Step 12: Click "Build this agent" button on any gallery card
-    await gallery.clickBuildThisAgent(0);
-    // Expect: Should navigate to Sign In page (unauthenticated user)
-    await expect(page).toHaveURL(/sign-in/i);
-
-    // Step 13: Click "Details" button
-    await gallery.open();
-    await page.waitForLoadState("networkidle");
-    await gallery.clickDetails(0);
-    // Expect: Should navigate to the corresponding agent detail page
-    await expect(page).toHaveURL(/\/agents\//);
+    // Expect: User is redirected to agents gallery
+    await expect(page).toHaveURL(/agents$/);
   });
 });

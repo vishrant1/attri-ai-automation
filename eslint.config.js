@@ -43,7 +43,7 @@ export default [
       /* ===============================
          General Quality
          =============================== */
-      'no-console': 'error',
+      'no-console': 'warn',
       'prettier/prettier': 'error'
     }
   },

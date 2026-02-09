@@ -6,9 +6,6 @@ export class LayoutPage {
   // Header root
   readonly header: Locator;
 
-  // Logo
-  readonly logoLink: Locator;
-
   // Desktop navigation links
   readonly agentsGalleryLink: Locator;
   readonly becomePartnerLink: Locator;
@@ -18,10 +15,6 @@ export class LayoutPage {
   // Auth / CTA
   readonly loginButton: Locator;
   readonly startForFreeButton: Locator;
-
-  // Mobile specific
-  readonly mobileMenuButton: Locator;
-  readonly bookDemoButton: Locator;
 
   // Footer sections
   readonly footer: Locator;
@@ -35,9 +28,6 @@ export class LayoutPage {
 
     // Header root
     this.header = page.locator("header");
-
-    // Logo (anchor wrapping SVG)
-    this.logoLink = this.header.getByRole("link").first();
 
     // Primary nav links (desktop)
     this.agentsGalleryLink = this.header.getByRole("link", {
@@ -63,15 +53,6 @@ export class LayoutPage {
 
     this.startForFreeButton = this.header.getByRole("button", {
       name: "Start for free",
-    });
-
-    // Mobile-only controls
-    this.mobileMenuButton = this.header.getByRole("button", {
-      name: /open menu/i,
-    });
-
-    this.bookDemoButton = this.header.getByRole("button", {
-      name: /book a demo/i,
     });
 
     // Footer

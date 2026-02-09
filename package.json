@@ -5,23 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
-    "test:ui": "npx playwright test --ui",
-    "test:ui:debug": "npx playwright test --ui --debug",
-    "test:ui:debug:open": "npx playwright test --ui --debug --open",
-    "test:ui:debug:open:trace": "npx playwright test --ui --debug --open --trace",
-    "test:ui:debug:open:trace:open": "npx playwright test --ui --debug --open --trace --trace-options",
-    "report": "playwright show-report",
-    "lint": "eslint ."
+    "report": "allure generate allure-results --clean && allure open"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
+    "allure-playwright": "^3.4.5",
     "dotenv": "^17.2.4",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
